@@ -1,8 +1,10 @@
-from context import Context
+from core.context import Context
+
 
 class Core:
     def __init__(self, context:Context):
         self.context: Context = context
+        self.state: bool = False
 
     def get_message_pos(self):
         pass
@@ -30,6 +32,11 @@ class Core:
 
     def set_messages_pos(self):
         pass
+
+    def add_to_loop(self):
+
+    def mainloop(self):
+
 
 
 if __name__ == '__main__':
