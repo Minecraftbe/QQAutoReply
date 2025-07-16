@@ -1,6 +1,6 @@
 from tkinter import Tk, Button, Label, StringVar
 from utils.logger_util import get_logger
-from context import Context
+from core.context import Context
 
 logger = get_logger(__name__)
 
