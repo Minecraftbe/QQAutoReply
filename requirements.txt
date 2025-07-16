@@ -2,5 +2,9 @@ pyautogui~=0.9.54
 paddleocr
 openai~=1.95.1
 pillow
-
+keyboard
 pyperclip~=1.9.0
+opencv-python
+numpy
+logging
+#pip install paddlepaddle==3.0.0 -i https://www.paddlepaddle.org.cn/packages/stable/cpu/
