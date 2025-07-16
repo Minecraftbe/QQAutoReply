@@ -23,5 +23,5 @@ def area_picker() -> tuple:
 
     width = x2 - x1
     height = y2 - y1
-    print(f"✅ 截图区域: ({x1}, {y1}, {width}, {height})")
+    print(f"✅ 截图区域: ({x1}, {y1}, {x2}, {y2})")
     return x1, y1, x2, y2
