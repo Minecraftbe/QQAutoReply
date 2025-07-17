@@ -1,6 +1,5 @@
+import core
+import ui
+import utils
 def main():
-    pass
-
-import cv2
-import pubsub
-cv2.waitKey(111)
+    ui

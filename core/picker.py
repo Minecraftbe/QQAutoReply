@@ -1,27 +1,53 @@
-import pyautogui
-import time
+from pyautogui import position
+from time import sleep
+from pubsub import pub
+from utils.logger_util import get_logger
+from threading import Thread
+
+logger = get_logger(__name__)
 
 
-def coord_picker() -> tuple:
-    print("🖱️ 请将鼠标移动到目标区域，2 秒后将获取坐标...")
-    time.sleep(2)
-    x, y = pyautogui.position()
-    print(f"📍 当前坐标：({x}, {y})")
+def chat_box_picker() -> tuple:
+    delay: int = 2
+    hint: str = f"🖱 现在选取输入框位置，请将鼠标移动到目标位置，{delay} 秒后将获取坐标..."
+    pub.sendMessage("update_ui.hint", text=hint)
+    sleep(delay)
+    x, y = position()
+    logger.info(f"📍 当前坐标：({x}, {y})")
+    pub.sendMessage("update_chat_box_pos", pos=(x, y))
     return x, y
 
 
-def area_picker() -> tuple:
-    print("🖱️ 移动鼠标到左上角，3 秒后获取坐标")
-    time.sleep(3)
-    x1, y1 = pyautogui.position()
-    print(f"📍 左上角：({x1}, {y1})")
+def messages_picker() -> tuple:
+    delay: int = 3
+    hint: str = f"🖱 现在选取聊天界面位置，请移动鼠标到左上角，{delay} 秒后获取坐标"
+    pub.sendMessage("update_ui.hint", text=hint)
+    sleep(delay)
+    x1, y1 = position()
 
-    print("🖱️ 移动鼠标到右下角，3 秒后获取坐标")
-    time.sleep(3)
-    x2, y2 = pyautogui.position()
-    print(f"📍 右下角：({x2}, {y2})")
+    hint = f"🖱 移动鼠标到右下角，{delay} 秒后获取坐标"
+    pub.sendMessage("update_ui.hint", text=hint)
+    sleep(delay)
+    x2, y2 = position()
 
     width = x2 - x1
     height = y2 - y1
-    print(f"✅ 截图区域: ({x1}, {y1}, {x2}, {y2})")
+    logger.info(f"📍 左上角：({x1}, {y1})")
+    logger.info(f"📍 右下角：({x2}, {y2})")
+    logger.info(f"✅ 截图区域: ({x1}, {y1}, {x2}, {y2})")
+
+    pub.sendMessage("update_ui.hint", text="坐标选取已完成！")
+    pub.sendMessage("update_message_pos", pos=(x1, y1, x2, y2))
     return x1, y1, x2, y2
+
+
+def set_coordinates():
+    chat_box_picker()
+    messages_picker()
+
+
+def init():
+    Thread(target=set_coordinates, daemon=True, name="CoordinatePicker").start()
+
+
+pub.subscribe(init, "set_coordinates")

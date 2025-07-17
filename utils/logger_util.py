@@ -1,17 +1,17 @@
 import logging
 from sys import stdout
-from utils.utils import get_root_dir
+from utils.utils import get_project_dir
 from os.path import exists
 
 
 def setup_logger():
-    log_dir: str = get_root_dir() + "\\latest.log"
+    log_dir: str = get_project_dir() + "\\latest.log"
 
     logger = logging.getLogger()
     if logger.handlers:
         return  # 已设置过，不重复添加
 
-    logger.setLevel(logging.INFO)
+    logger.setLevel(logging.DEBUG)
 
     formatter = logging.Formatter(
         "[%(asctime)s] [%(threadName)s/%(levelname)s] [%(name)s]: %(message)s",
