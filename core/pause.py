@@ -1,3 +1,0 @@
-from keyboard import is_pressed
-
-def

@@ -1,10 +1,12 @@
 from tkinter import Button
-from ui.window import Window
+from typing import TYPE_CHECKING
 
-window: Window
+if TYPE_CHECKING:
+    from window import Window
+window: "Window"
 
 
-def setup_updates(_window: Window):
+def setup_updates(_window):
     global window
     window = _window
 
@@ -22,7 +24,7 @@ def update_chat_box_pos(pos: tuple):
 
 def update_message_pos(pos: tuple):
     window.vars.get("message_pos").set(f"消息位置: {pos}")
-    update_ui_lock_state(False)
+    toggle_ui_lock_state(False)
 
 
 def update_hint(text: str):
@@ -30,10 +32,14 @@ def update_hint(text: str):
 
 
 # -----更新按钮状态(锁定或正常)-----
-def update_ui_lock_state(locked: bool, exception: Button | None = None):
+def toggle_ui_lock_state(locked: bool, exception: Button | list[Button] | None = None):
     window.ui_locked = locked
+    if exception is None:
+        exceptions = []
+    elif isinstance(exception, list):
+        exceptions = exception
+    else:
+        exceptions = [exception]
+
     for ctrl in window.controls:
-        if ctrl == exception:
-            ctrl.config(state="normal")
-        else:
-            ctrl.config(state="disabled" if locked else "normal")
+        ctrl.config(state="normal" if ctrl in exceptions else ("disabled" if locked else "normal"))

@@ -1,3 +1,5 @@
-/messages/
+/messages/*
 /backup/
-/temp/
+/temp/*
+.env
+latest.log
