@@ -1,3 +1,0 @@
-[06:40:43] [MainThread/INFO] [cores.core.Core]: Core 已初始化
-[06:40:43] [MainThread/INFO] [cores.core.Core]: aaaa
-[06:40:43] [KeyListeningThread/INFO] [utils.utils.key_listener]: 未发现自定义按键，默认监听 P 键
