@@ -1,7 +1,6 @@
 import logging
 from sys import stdout
-from utils.utils import get_project_dir
-from os.path import exists
+from .path_util import get_project_dir
 
 
 def setup_logger():
