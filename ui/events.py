@@ -1,10 +1,12 @@
 from tkinter.filedialog import askopenfilename, asksaveasfilename
+from typing import TYPE_CHECKING
+
 from pubsub import pub
+
+from constants import *
 from ui.update import toggle_ui_lock_state, update_state
 from utils.log_util import get_logger
 from utils.path_util import get_project_dir
-from typing import TYPE_CHECKING
-from constants import *
 
 if TYPE_CHECKING:
     from window import Window

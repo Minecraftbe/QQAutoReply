@@ -1,7 +1,9 @@
 from tkinter import Tk
-from utils.log_util import get_logger
-from ui.controllers import setup_controllers, subscribe_events
 from typing import TYPE_CHECKING, Union
+
+from ui.controllers import setup_controllers, subscribe_events
+from utils.interfaces import IRunnable
+from utils.log_util import get_logger
 
 if TYPE_CHECKING:
     from tkinter import Button, StringVar
@@ -9,7 +11,7 @@ if TYPE_CHECKING:
 logger = get_logger(__name__)
 
 
-class Window(Tk):
+class Window(Tk, IRunnable):
     def __init__(self):
         super().__init__()
         self.ui_locked: bool = False
