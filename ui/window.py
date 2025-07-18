@@ -22,7 +22,7 @@ class Window(Tk, IRunnable):
 
     # -----一种预设, 已自动开启-----
     def _init_layout(self):
-        self.geometry("500x200+10+10")
+        self.geometry("500x300+10+10")
         setup_controllers(self)
 
     # -----不要忘记调用run()!!!!!!-----
