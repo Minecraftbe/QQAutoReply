@@ -5,8 +5,6 @@ from constants import *
 from .log_util import get_logger
 
 
-
-
 def key_listener(hotkey: str | None = None):
     logger = get_logger(f"{__name__}.{key_listener.__name__}")
     if current_thread().name == "MainThread":

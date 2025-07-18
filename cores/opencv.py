@@ -1,17 +1,15 @@
-from mss.screenshot import ScreenShot
-from pubsub import pub
-from mss import mss
-import numpy as np
-from constants import *
 import cv2
+import numpy as np
+from mss import mss
+from pubsub import pub
+
+from constants import *
 from utils.interfaces import IRunnable, IWithLogger
-from utils.log_util import get_logger
 
 
 class ImageProcessor(IRunnable, IWithLogger):
     def __init__(self):
         super().__init__()
-
 
     def run(self):
         pass

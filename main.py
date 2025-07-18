@@ -1,9 +1,9 @@
-import cores as mypkg_core
-from cores.core_thread import CoreThread
-from ui import window
-import utils as mypkg_utils
-from threading import Thread
 from os import mkdir, path
+from threading import Thread
+
+import cores as mypkg_core
+import utils as mypkg_utils
+from ui import window
 
 
 def main():
@@ -12,9 +12,11 @@ def main():
     key_listening_thread = Thread(target=mypkg_utils.utils.key_listener, daemon=True, name="KeyListeningThread")
     key_listening_thread.start()
 
-    core_thread = CoreThread()
-    core_thread.get_core().logger.info("aaaa")
+    core_thread = mypkg_core.CoreThread(10000000000000)
+    core_thread.start()
 
+    ocr_thread = Thread(target=mypkg_core.OpticalCharacterRecognition, name="OCRThread", daemon=True)
+    ocr_thread.start()
     # 最后初始化ui，要不然主线程任务无法继续执行
     ui = window.init()
 

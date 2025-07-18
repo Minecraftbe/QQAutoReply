@@ -1,7 +1,6 @@
-from utils.interfaces import IRunnable, IWithLogger
 from cores.ocr import OpticalCharacterRecognition
 from cores.opencv import ImageProcessor
-from utils.log_util import get_logger
+from utils.interfaces import IRunnable, IWithLogger
 
 
 class Core(IRunnable, IWithLogger):
