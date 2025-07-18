@@ -6,40 +6,40 @@ from utils.interfaces import IRunnable
 from utils.log_util import get_logger
 
 if TYPE_CHECKING:
-    from tkinter import Button, StringVar
+    from tkinter import Button, StringVar, Label
 
 logger = get_logger(__name__)
-
 
 class Window(Tk, IRunnable):
     def __init__(self):
         super().__init__()
         self.ui_locked: bool = False
-        self.vars: dict[str, Union["StringVar", "Button"]] = {}
+        self.vars: dict[str, Union["StringVar", "Button", "Label"]] = {}
         self.controls: list["Button"] = []
         self.resizable(False, False)
         self.state: bool = False
 
-    # -----一种预设, 已自动开启-----
+        # 设置窗口样式
+        self.title("聊天助手")
+        self.configure(bg="#ecf0f1")
+        self.option_add("*Font", "微软雅黑 9")  # 减小全局字体大小
+
+    # 初始化布局
     def _init_layout(self):
-        self.geometry("500x300+10+10")
+        self.geometry("500x280")  # 减小窗口尺寸
+        self.update_idletasks()  # 确保窗口尺寸计算准确
         setup_controllers(self)
 
-    # -----不要忘记调用run()!!!!!!-----
     def run(self):
         self._init_layout()
         subscribe_events()
         self.mainloop()
-
 
 def init():
     ui = Window()
     ui.run()
     return ui
 
-
 if __name__ == '__main__':
-    # from ui.controllers import *
-
-    logger.info("hello world")
+    logger.info("启动聊天助手")
     init()

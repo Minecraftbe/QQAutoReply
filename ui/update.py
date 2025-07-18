@@ -15,7 +15,12 @@ def setup_updates(_window):
 
 def update_state(state: bool):
     window.state = state
-    window.vars.get("state").set(f"运行状态: {window.state}")
+    if state:
+        window.vars.get("state").set(f"运行状态: 运行中...")
+        window.vars.get("status_indicator").config(fg="#2ecc71")
+    else:
+        window.vars.get("state").set(f"运行状态: 停止")
+        window.vars.get("status_indicator").config(fg="#e74c3c")
 
 
 def update_chat_box_pos(pos: tuple):
