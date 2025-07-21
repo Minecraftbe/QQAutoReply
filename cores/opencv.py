@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 from mss import mss
 from pubsub import pub
+from skimage.metrics import structural_similarity as ssim
 
 from constants import *
 from utils.interfaces import IRunnable, IWithLogger
@@ -10,8 +11,31 @@ from utils.interfaces import IRunnable, IWithLogger
 class ImageProcessor(IRunnable, IWithLogger):
     def __init__(self):
         super().__init__()
+        self.is_changed: bool = False
+        self._is_initialized = False
+        self.scr = ScreenCapturer()
 
     def run(self):
+        self.is_changed = False
+        if not self._is_initialized:
+            self.scr.run()
+        self.scr.run()
+
+        if self.is_chat_changed(self.scr.get_images()):
+            self.is_changed = True
+            print("aaa")
+
+    @staticmethod
+    def is_chat_changed(images: tuple):
+        this = images[0]
+        last = images[1]
+
+        similarity, diff = ssim(this, last, full=True)
+        if similarity < 0.95:
+            return True
+
+    @staticmethod
+    def split_image(image):
         pass
 
 
@@ -21,9 +45,9 @@ class ScreenCapturer(IRunnable):
         self.y: int = 0
         self.width: int = 0
         self.height: int = 0
-        self._is_initialized: bool = False
-        self.this_image = None
-        self.last_image = None
+        self.is_initialized: bool = False
+        self._this_image = None
+        self._last_image = None
         pub.subscribe(self.set_coordinates, TOPIC_SET_MESSAGE_POS)
 
     def set_coordinates(self, pos: tuple):
@@ -31,12 +55,12 @@ class ScreenCapturer(IRunnable):
         self.y = pos[1]
         self.width = pos[2] - self.x
         self.height = pos[3] - self.y
-        self._is_initialized = True
+        self.is_initialized = True
 
     def run(self):
-        if not self._is_initialized:
+        if not self.is_initialized:
             raise RuntimeError("未初始化")
-        self.last_image = self.this_image
+        self._last_image = self._this_image
         with mss() as sct:
             monitor = {
                 "left": self.x,
@@ -44,9 +68,9 @@ class ScreenCapturer(IRunnable):
                 "width": self.width,
                 "height": self.height
             }
-            self.this_image = cv2.cvtColor(np.array(sct.grab(monitor)), cv2.COLOR_BGR2GRAY)
+            self._this_image = cv2.cvtColor(np.array(sct.grab(monitor)), cv2.COLOR_BGR2GRAY)
 
     def get_images(self):
-        if not self._is_initialized:
+        if not self.is_initialized:
             raise RuntimeError("未初始化")
-        return self.this_image, self.last_image
+        return self._this_image, self._last_image

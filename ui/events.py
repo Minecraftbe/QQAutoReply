@@ -33,14 +33,13 @@ def load_message():
 
 def on_toggle_running():
     if window.state:
-        pub.sendMessage(TOPIC_PAUSE)
+        _reverse_and_update_state()
         toggle_ui_lock_state(False)
+        pub.sendMessage(TOPIC_PAUSE)
     else:
-        pub.sendMessage(TOPIC_START)
+        _reverse_and_update_state()
         toggle_ui_lock_state(True, window.vars.get("b_start"))
-
-    window.state = not window.state
-    update_state(window.state)
+        pub.sendMessage(TOPIC_START)
 
 
 def set_coordinates():
@@ -56,3 +55,9 @@ def new_message():
         logger.info(f"新的对话文件已创建，文件为: {new_file}")
     else:
         logger.warning("本次选取被取消！")
+
+
+# -----工具函数-----
+def _reverse_and_update_state():
+    window.state = not window.state
+    update_state(window.state)
