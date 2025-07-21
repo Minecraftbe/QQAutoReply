@@ -12,7 +12,7 @@ def main():
     key_listening_thread = Thread(target=mypkg_utils.utils.key_listener, daemon=True, name="KeyListeningThread")
     key_listening_thread.start()
 
-    core_thread = mypkg_core.CoreThread(10000000000000)
+    core_thread = mypkg_core.CoreThread(10)
     core_thread.start()
 
     ocr_thread = Thread(target=mypkg_core.OpticalCharacterRecognition, name="OCRThread", daemon=True)

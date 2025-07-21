@@ -1,13 +1,14 @@
 import math
-from threading import Event
 from time import time, sleep as sl
 
 from pubsub import pub
 
 from constants import *
+from cores.ocr import OpticalCharacterRecognition
 from cores.core import Core
-from utils.controllable_thread import ControllableThread
+from cores.opencv import ImageProcessor, ScreenCapturer
 from utils.interfaces import IWithLogger
+from utils.thread_util import ControllableThread
 
 
 class CoreThread(ControllableThread, IWithLogger):
@@ -17,8 +18,6 @@ class CoreThread(ControllableThread, IWithLogger):
 
         self.core = Core()
         self._tick_duration: float = 1 / tps
-        self._running_event = Event()
-        self._stop_event = Event()
 
         pub.subscribe(self.pause, TOPIC_PAUSE)
         pub.subscribe(self.resume, TOPIC_START)
@@ -33,7 +32,8 @@ class CoreThread(ControllableThread, IWithLogger):
             remaining = self._tick_duration + start - time()
             if remaining > 0:
                 sl(remaining)
-                print(remaining)
+                # test
+                # print(remaining)
             else:
                 if not warning:
                     self.logger.warning(f"tps太高，电脑无法胜任，建议将tps设置低于 {math.floor(1 / -remaining)}")
@@ -41,3 +41,14 @@ class CoreThread(ControllableThread, IWithLogger):
 
     def get_core(self):
         return self.core
+
+    def resume(self):
+        if self.core.opencv.scr.is_initialized:
+            super().resume()
+        else:
+            from tkinter.messagebox import showwarning
+            showwarning("未完成坐标选择", "未选择坐标，无法启动！")
+            pub.sendMessage(TOPIC_PAUSE)
+            pub.sendMessage(TOPIC_TOGGLE_RUNNING)
+            self.logger.warning("未选择坐标，已回滚此次启动！")
+

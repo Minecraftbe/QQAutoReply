@@ -8,7 +8,7 @@ class Core(IRunnable, IWithLogger):
         super().__init__()
         self.state: bool = False
         self.modules: dict[str:IRunnable] = {}
-        self.ocr: OpticalCharacterRecognition
+        self.ocr: OpticalCharacterRecognition = OpticalCharacterRecognition()
         self.opencv: ImageProcessor
         self.opencv = ImageProcessor()
         self.logger.info(f"{self.__class__.__name__} 已初始化")
