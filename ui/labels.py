@@ -1,19 +1,22 @@
 from tkinter import StringVar, Frame, Label, LabelFrame
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from window import Window
 
+
 def setup_labels(_window: "Window"):
-    frame_labels = LabelFrame(_window,
-                              text="状态面板",
-                              padx=10,
-                              pady=8,
-                              font=("微软雅黑", 10, "bold"),
-                              labelanchor="n",
-                              bg="#f5f7fa",
-                              fg="#34495e",
-                              relief="flat")
+    frame_labels = LabelFrame(
+        _window,
+        text="状态面板",
+        padx=10,
+        pady=8,
+        font=("微软雅黑", 10, "bold"),
+        labelanchor="n",
+        bg="#f5f7fa",
+        fg="#34495e",
+        relief="flat",
+    )
     frame_labels.pack(side="top", fill="x", padx=10, pady=8)
 
     # 创建 StringVar 状态变量
@@ -29,13 +32,13 @@ def setup_labels(_window: "Window"):
     _window.vars["message_pos"] = message_pos
 
     # 优化标签样式
-    label_config = {
+    label_config: dict[str, Any] = {
         "anchor": "w",
         "font": ("微软雅黑", 9),
         "padx": 8,
         "pady": 2,
         "bg": "#f5f7fa",
-        "fg": "#2c3e50"
+        "fg": "#2c3e50",
     }
 
     # 创建状态行框架 - 将状态文本和指示器放在同一行
@@ -47,8 +50,9 @@ def setup_labels(_window: "Window"):
     l_state.pack(side="left", fill="x", expand=True)
 
     # 状态指示器 - 现在与状态文本在同一行
-    status_indicator = Label(frame_state, text="🔴", fg="#e74c3c", bg="#f5f7fa",
-                             font=("Arial", 12), padx=8)
+    status_indicator = Label(
+        frame_state, text="🔴", fg="#e74c3c", bg="#f5f7fa", font=("Arial", 12), padx=8
+    )
     _window.vars["status_indicator"] = status_indicator
     status_indicator.pack(side="right", anchor="e")
 
@@ -68,7 +72,7 @@ def setup_labels(_window: "Window"):
         fg="#ffffff",
         bg="#e74c3c",
         font=("微软雅黑", 9, "bold"),
-        borderwidth=0
+        borderwidth=0,
     )
 
     # 按顺序排列

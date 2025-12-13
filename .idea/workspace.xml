@@ -5,9 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a767b16f-1e6a-41bb-a57a-875da4dc310c" name="更改" comment="改进ui,ds-r1提供的漂亮ui">
-      <change beforePath="$PROJECT_DIR$/.idea/QQAutoReply.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/QQAutoReply.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/QQAutoReply.code-workspace" beforeDir="false" afterPath="$PROJECT_DIR$/QQAutoReply.code-workspace" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ui/buttons.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/ui/buttons.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ui/events.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/ui/events.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ui/labels.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/ui/labels.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -55,7 +57,7 @@
     "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "core-dev",
     "last_opened_file_path": "D:/Demo/PythonProject/QQAutoReply",
-    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
+    "settings.editor.selected.configurable": "preferences.rainbow.brackets.lite"
   }
 }]]></component>
   <component name="RunManager">
