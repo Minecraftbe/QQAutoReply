@@ -5,6 +5,7 @@
 latest.log
 /test
 .code-workspace
+.idea/*
 
 # Python-generated files
 __pycache__/
