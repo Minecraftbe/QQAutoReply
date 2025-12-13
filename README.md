@@ -35,9 +35,3 @@ It is **not intended for production use**, and the code may be incomplete, unsta
   欢迎浏览，但请勿期待完善的功能或技术支持。
 - All contributions are welcome as learning exercises — but this repo won’t accept real PRs for production.  
   欢迎以学习为目的的交流，但本仓库不接受面向生产的 PR。
-
----
-
-## 🛠️ License
-
-MIT License — see [LICENSE](LICENSE) for details.
