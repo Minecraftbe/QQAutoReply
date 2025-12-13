@@ -1,7 +1,7 @@
 from os import mkdir, path
 from threading import Thread
 
-import cores as mypkg_core
+import core as mypkg_core
 import utils as mypkg_utils
 from ui import window
 
