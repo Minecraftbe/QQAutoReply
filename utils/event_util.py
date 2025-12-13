@@ -17,5 +17,8 @@ TOPIC_SET_CHAT_BOX_POS = "set_chat_box_pos"
 TOPIC_SET_MESSAGE_POS = "set_message_pos"
 
 
-def subscribe(fun: Callable[..., Any], topic: str):
-    pub.subscribe(fun, topic)
+def subscribe(topic: str):
+    def decorator(func: Callable[..., Any]) -> Callable[..., Any]:
+        pub.subscribe(func, topic)
+        return func
+    return decorator

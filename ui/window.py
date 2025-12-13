@@ -1,7 +1,8 @@
 from tkinter import Tk
 from typing import TYPE_CHECKING, Union
 
-from ui.controllers import setup_controllers, subscribe_events
+from ui.controllers import setup_controllers
+from ui.update import setup_updates
 from utils.interfaces import IRunnable
 from utils.log_util import get_logger
 
@@ -13,6 +14,7 @@ logger = get_logger(__name__)
 
 class Window(Tk, IRunnable):
     b_start_buffer: Union["Button", None] = None
+
     def __init__(self):
         super().__init__()
         self.ui_locked: bool = False
@@ -32,10 +34,10 @@ class Window(Tk, IRunnable):
         self.geometry("500x280")  # 减小窗口尺寸
         self.update_idletasks()  # 确保窗口尺寸计算准确
         setup_controllers(self)
+        setup_updates(self)
 
     def run(self):
         self._init_layout()
-        subscribe_events()
         self.mainloop()
 
 
