@@ -1,10 +1,12 @@
-import cv2
-import numpy as np
+from cv2.typing import MatLike
 from mss import mss
 from pubsub import pub
-from skimage.metrics import structural_similarity as ssim
+from skimage.metrics import structural_similarity as ssim  # type: ignore
 
-from constants import *
+import cv2
+import numpy as np
+
+from utils.event_util import TOPIC_SET_MESSAGE_POS
 from utils.interfaces import IRunnable, IWithLogger
 
 
@@ -26,16 +28,20 @@ class ImageProcessor(IRunnable, IWithLogger):
             print("aaa")
 
     @staticmethod
-    def is_chat_changed(images: tuple):
+    def is_chat_changed(images: tuple[MatLike | None, MatLike | None]) -> bool:
         this = images[0]
         last = images[1]
 
-        similarity, diff = ssim(this, last, full=True)
+        if this == last:
+            return True
+        similarity, _ = ssim(this, last, full=True)  # type: ignore
         if similarity < 0.95:
             return True
+        else:
+            return False
 
     @staticmethod
-    def split_image(image):
+    def split_image(image: MatLike):
         pass
 
 
@@ -50,7 +56,7 @@ class ScreenCapturer(IRunnable):
         self._last_image = None
         pub.subscribe(self.set_coordinates, TOPIC_SET_MESSAGE_POS)
 
-    def set_coordinates(self, pos: tuple):
+    def set_coordinates(self, pos: tuple[int, int, int, int]):
         self.x = pos[0]
         self.y = pos[1]
         self.width = pos[2] - self.x
@@ -66,9 +72,11 @@ class ScreenCapturer(IRunnable):
                 "left": self.x,
                 "top": self.y,
                 "width": self.width,
-                "height": self.height
+                "height": self.height,
             }
-            self._this_image = cv2.cvtColor(np.array(sct.grab(monitor)), cv2.COLOR_BGR2GRAY)
+            self._this_image = cv2.cvtColor(
+                np.array(sct.grab(monitor)), cv2.COLOR_BGR2GRAY
+            )
 
     def get_images(self):
         if not self.is_initialized:

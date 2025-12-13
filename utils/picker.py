@@ -2,7 +2,7 @@ from pyautogui import position
 from time import sleep
 from pubsub import pub
 
-from constants import *
+from utils.event_util import TOPIC_SET_CHAT_BOX_POS, TOPIC_SET_COORDINATES, TOPIC_SET_MESSAGE_POS, TOPIC_UPDATE_HINT
 from utils.log_util import get_logger
 from threading import Thread
 
@@ -20,7 +20,7 @@ def chat_box_picker() -> tuple:
     return x, y
 
 
-def messages_picker() -> tuple:
+def messages_picker() -> tuple[int, int, int, int]:
     delay: int = 3
     hint: str = f"❗ 现在选取聊天界面位置，请移动鼠标到左上角，{delay} 秒后获取坐标"
     pub.sendMessage(TOPIC_UPDATE_HINT, text=hint)
@@ -32,8 +32,8 @@ def messages_picker() -> tuple:
     sleep(delay)
     x2, y2 = position()
 
-    width = x2 - x1
-    height = y2 - y1
+    # width = x2 - x1
+    # height = y2 - y1
     logger.info(f"📍 左上角：({x1}, {y1})")
     logger.info(f"📍 右下角：({x2}, {y2})")
     logger.info(f"✅ 截图区域: ({x1}, {y1}, {x2}, {y2})")
