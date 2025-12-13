@@ -1,7 +1,8 @@
 from pubsub import pub
 from keyboard import add_hotkey
 from threading import current_thread
-from constants import *
+
+from utils.event_util import TOPIC_TOGGLE_RUNNING
 from .log_util import get_logger
 
 

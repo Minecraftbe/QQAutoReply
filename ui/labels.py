@@ -26,10 +26,10 @@ def setup_labels(_window: "Window"):
     hint = StringVar(value="提示: 点击'选取坐标'设置位置")
 
     # 注册变量
-    _window.vars["hint"] = hint
-    _window.vars["state"] = state
-    _window.vars["chat_box_pos"] = chat_box_pos
-    _window.vars["message_pos"] = message_pos
+    _window.string_vars["hint"] = hint
+    _window.string_vars["state"] = state
+    _window.string_vars["chat_box_pos"] = chat_box_pos
+    _window.string_vars["message_pos"] = message_pos
 
     # 优化标签样式
     label_config: dict[str, Any] = {
@@ -53,7 +53,7 @@ def setup_labels(_window: "Window"):
     status_indicator = Label(
         frame_state, text="🔴", fg="#e74c3c", bg="#f5f7fa", font=("Arial", 12), padx=8
     )
-    _window.vars["status_indicator"] = status_indicator
+    _window.labels["status_indicator"] = status_indicator
     status_indicator.pack(side="right", anchor="e")
 
     # 其他标签组件
