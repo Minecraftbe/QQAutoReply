@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 
 from pubsub import pub
 
-from constants import *
+from constants import TOPIC_LOAD_MESSAGE, TOPIC_PAUSE, TOPIC_START, TOPIC_SET_COORDINATES, TOPIC_NEW_MESSAGE
 from ui.update import toggle_ui_lock_state, update_state
 from utils.log_util import get_logger
 from utils.path_util import get_project_dir
@@ -22,11 +22,11 @@ def setup_events(_window: "Window"):
 # -----按钮对应指令-----
 
 def load_message():
-    file: str = askopenfilename(initialdir=get_project_dir() + "\\messages",
+    file_: str = askopenfilename(initialdir=get_project_dir() + "\\messages",
                                 filetypes=(("对话文件", "*.json"), ("所有文件", "*.*")))
-    if file != "":
-        pub.sendMessage(TOPIC_LOAD_MESSAGE, file=file)
-        logger.info(f"对话文件已选取，文件为: {file}")
+    if file_ != "":
+        pub.sendMessage(TOPIC_LOAD_MESSAGE, file=file_)
+        logger.info(f"对话文件已选取，文件为: {file_}")
     else:
         logger.warning("本次选取被取消！")
 

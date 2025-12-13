@@ -1,5 +1,6 @@
 from tkinter import Frame, Button
-from .events import *
+from typing import Any
+from .events import Window, load_message, new_message, on_toggle_running, set_coordinates, setup_events
 
 def setup_buttons(_window: "Window"):
     setup_events(_window)
@@ -8,7 +9,7 @@ def setup_buttons(_window: "Window"):
     frame_buttons.pack(side="bottom", fill="x", padx=10, pady=(0, 10))
 
     # 优化按钮样式 - 更合适的字体大小和间距
-    button_config = {
+    button_config: dict[str, Any] = {
         "font": ("微软雅黑", 9, "bold"),  # 减小字体大小
         "fg": "#ffffff",
         "borderwidth": 0,

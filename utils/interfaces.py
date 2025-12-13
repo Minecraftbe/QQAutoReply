@@ -5,7 +5,7 @@ from utils.log_util import get_logger
 
 class IRunnable(ABC):
     @abstractmethod
-    def run(self):
+    def run(self) -> None:
         pass
 
 class IWithLogger:

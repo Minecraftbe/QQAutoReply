@@ -6,7 +6,7 @@ if TYPE_CHECKING:
 window: "Window"
 
 
-def setup_updates(_window):
+def setup_updates(_window:Window):
     global window
     window = _window
 
