@@ -5,7 +5,15 @@ from typing import TYPE_CHECKING, Any
 from pubsub import pub
 
 from ui.update import toggle_ui_lock_state, update_state
-from utils.event_util import TOPIC_LOAD_MESSAGE, TOPIC_NEW_MESSAGE, TOPIC_PAUSE, TOPIC_SET_COORDINATES, TOPIC_START, TOPIC_TOGGLE_RUNNING, subscribe
+from utils.event_util import (
+    TOPIC_LOAD_MESSAGE,
+    TOPIC_NEW_MESSAGE,
+    TOPIC_PAUSE,
+    TOPIC_SET_COORDINATES,
+    TOPIC_START,
+    TOPIC_TOGGLE_RUNNING,
+    subscribe,
+)
 from utils.log_util import get_logger
 from utils.path_util import get_project_dir
 
@@ -14,11 +22,14 @@ if TYPE_CHECKING:
 
 window: "Window"
 logger = get_logger(__name__)
+
+
 def setup_controllers(_window: "Window"):
     global window
     window = _window
     setup_labels()
     setup_buttons()
+
 
 def setup_labels():
     frame_labels = LabelFrame(
@@ -96,8 +107,8 @@ def setup_labels():
 
     logger.info("Labels initialized successfully.")
 
+
 def setup_buttons():
-    
     frame_buttons = Frame(window, padx=10, pady=5, bg="#f5f7fa")
     frame_buttons.pack(side="bottom", fill="x", padx=10, pady=(0, 10))
 
@@ -163,6 +174,7 @@ def setup_buttons():
     for btn in (b_load_messages, b_start, b_set_pos, b_new_message):
         window.buttons.append(btn)
     logger.info("Buttons initialized successfully.")
+
 
 def load_message():
     file_: str = askopenfilename(
