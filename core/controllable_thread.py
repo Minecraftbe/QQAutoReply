@@ -2,11 +2,10 @@ import math
 from time import time, sleep as sl
 
 from pubsub import pub
-
-from constants import *
-from cores.ocr import OpticalCharacterRecognition
-from cores.core import Core
-from cores.opencv import ImageProcessor, ScreenCapturer
+from utils.event_util import TOPIC_PAUSE, TOPIC_START, TOPIC_TOGGLE_RUNNING
+from core.ocr import OpticalCharacterRecognition
+from core.core import Core
+from core.opencv import ImageProcessor, ScreenCapturer
 from utils.interfaces import IWithLogger
 from utils.thread_util import ControllableThread
 
@@ -36,7 +35,7 @@ class CoreThread(ControllableThread, IWithLogger):
                 # print(remaining)
             else:
                 if not warning:
-                    self.logger.warning(f"tps太高，电脑无法胜任，建议将tps设置低于 {math.floor(1 / -remaining)}")
+                    self.logger.warning(f"tps太高, 电脑无法胜任, 建议将tps设置低于 {math.floor(1 / -remaining)}")
                     warning = True
 
     def get_core(self):

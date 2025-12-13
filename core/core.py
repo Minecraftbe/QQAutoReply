@@ -1,5 +1,5 @@
-from cores.ocr import OpticalCharacterRecognition
-from cores.opencv import ImageProcessor
+from core.ocr import OpticalCharacterRecognition
+from core.opencv import ImageProcessor
 from utils.interfaces import IRunnable, IWithLogger
 
 

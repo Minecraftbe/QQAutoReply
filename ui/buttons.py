@@ -1,6 +1,15 @@
 from tkinter import Frame, Button
-from typing import Any
-from .events import Window, load_message, new_message, on_toggle_running, set_coordinates, setup_events
+from typing import TYPE_CHECKING, Any
+from .events import (
+    load_message,
+    on_toggle_running,
+    set_coordinates,
+    new_message,
+    setup_events
+)
+
+if TYPE_CHECKING:
+    from window import Window
 
 def setup_buttons(_window: "Window"):
     setup_events(_window)
@@ -16,31 +25,46 @@ def setup_buttons(_window: "Window"):
         "highlightthickness": 0,
         "padx": 6,  # 减小水平内边距
         "pady": 4,  # 减小垂直内边距
-        "cursor": "hand2"
+        "cursor": "hand2",
     }
 
     # 按钮颜色方案
-    b_load_messages = Button(frame_buttons, text="📥 载入消息",  # 缩短文本
-                             command=load_message,
-                             bg="#3498db", activebackground="#2980b9",
-                             **button_config)
+    b_load_messages = Button(
+        frame_buttons,
+        text="📥 载入消息",  # 缩短文本
+        command=load_message,
+        bg="#3498db",
+        activebackground="#2980b9",
+        **button_config,
+    )
 
-    b_start = Button(frame_buttons, text="▶ 开始/暂停",
-                     command=on_toggle_running,
-                     bg="#2ecc71", activebackground="#27ae60",
-                     **button_config)
+    b_start = Button(
+        frame_buttons,
+        text="▶ 开始/暂停",
+        command=on_toggle_running,
+        bg="#2ecc71",
+        activebackground="#27ae60",
+        **button_config,
+    )
+    _window.b_start_buffer = b_start
 
-    b_set_pos = Button(frame_buttons, text="📍 选取坐标",
-                       command=set_coordinates,
-                       bg="#9b59b6", activebackground="#8e44ad",
-                       **button_config)
+    b_set_pos = Button(
+        frame_buttons,
+        text="📍 选取坐标",
+        command=set_coordinates,
+        bg="#9b59b6",
+        activebackground="#8e44ad",
+        **button_config,
+    )
 
-    b_new_message = Button(frame_buttons, text="📃 新建对话",  # 缩短文本
-                           command=new_message,
-                           bg="#e67e22", activebackground="#d35400",
-                           **button_config)
-
-    _window.vars["b_start"] = b_start
+    b_new_message = Button(
+        frame_buttons,
+        text="📃 新建对话",  # 缩短文本
+        command=new_message,
+        bg="#e67e22",
+        activebackground="#d35400",
+        **button_config,
+    )
 
     # 使用网格布局
     b_load_messages.grid(row=0, column=0, padx=5, pady=4, sticky="ew")  # 减小间距
@@ -53,4 +77,4 @@ def setup_buttons(_window: "Window"):
         frame_buttons.columnconfigure(i, weight=1)
 
     for btn in (b_load_messages, b_start, b_set_pos, b_new_message):
-        _window.controls.append(btn)
+        _window.buttons.append(btn)
