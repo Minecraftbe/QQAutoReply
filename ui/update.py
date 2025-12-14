@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 
 from utils.event_util import (
     TOPIC_SET_CHAT_BOX_POS,
-    TOPIC_SET_MESSAGE_POS,
+    TOPIC_SET_MESSAGE_AREA,
     TOPIC_UPDATE_HINT,
     TOPIC_UPDATE_RUNNING_STATE,
     subscribe,
@@ -36,9 +36,9 @@ def update_chat_box_pos(pos: tuple[int, int]):
     window.string_vars["chat_box_pos"].set(f"输入框位置: {pos}")
 
 
-@subscribe(TOPIC_SET_MESSAGE_POS)
+@subscribe(TOPIC_SET_MESSAGE_AREA)
 def update_message_pos(pos: tuple[int, int]):
-    window.string_vars["message_pos"].set(f"消息位置: {pos}")
+    window.string_vars["message_pos"].set(f"消息区域: {pos}")
     toggle_ui_lock_state(False)
 
 
