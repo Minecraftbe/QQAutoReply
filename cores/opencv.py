@@ -6,7 +6,7 @@ from skimage.metrics import structural_similarity as ssim  # type: ignore
 import cv2
 import numpy as np
 
-from utils.event_util import TOPIC_SET_MESSAGE_POS
+from utils.event_util import TOPIC_SET_MESSAGE_AREA
 from utils.interfaces import IRunnable, IWithLogger
 
 
@@ -54,7 +54,7 @@ class ScreenCapturer(IRunnable):
         self.is_initialized: bool = False
         self._this_image = None
         self._last_image = None
-        pub.subscribe(self.set_coordinates, TOPIC_SET_MESSAGE_POS)
+        pub.subscribe(self.set_coordinates, TOPIC_SET_MESSAGE_AREA)
 
     def set_coordinates(self, pos: tuple[int, int, int, int]):
         self.x = pos[0]
