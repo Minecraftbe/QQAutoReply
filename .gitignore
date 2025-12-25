@@ -3,8 +3,9 @@
 /temp/*
 .env
 latest.log
-/test
-.code-workspace
+/experimental/*
+/1.txt
+/*.code-workspace
 .idea/*
 
 # Python-generated files
