@@ -1,34 +1,56 @@
-from tkinter import Frame, Button, StringVar, Label, LabelFrame
+from __future__ import annotations
+from tkinter import Frame, LabelFrame, Tk, Button, StringVar, Label
 from tkinter.filedialog import askopenfilename, asksaveasfilename
 from typing import TYPE_CHECKING, Any
-
 from pubsub import pub
 
-from ui.update import toggle_ui_lock_state, update_state
-from utils.event_util import (
+from utils import (
     TOPIC_LOAD_MESSAGE,
     TOPIC_NEW_MESSAGE,
     TOPIC_PAUSE,
+    TOPIC_SET_CHAT_BOX_POS,
+    TOPIC_SET_MESSAGE_AREA,
     TOPIC_SET_POSITIONS,
     TOPIC_START,
-    TOPIC_TOGGLE_RUNNING,
+    TOPIC_TOGGLE_RUNNING_STATE,
+    TOPIC_UPDATE_HINT,
+    TOPIC_UPDATE_RUNNING_STATE,
     subscribe,
+    get_logger,
+    get_project_dir,
 )
-from utils.log_util import get_logger
-from utils.path_util import get_project_dir
 
-if TYPE_CHECKING:
-    from window import Window
-
-window: "Window"
 logger = get_logger(__name__)
+window: Window
 
 
-def setup_controllers(_window: "Window"):
-    global window
-    window = _window
-    setup_labels()
-    setup_buttons()
+# TODO: 合并controller.py和update.py的内容到Window类中, 减少过度抽象
+class Window(Tk):
+    def __init__(self):
+        super().__init__()
+        self.b_start_buffer: Button | None = None
+        self.ui_locked: bool = False
+        self.string_vars: dict[str, "StringVar"] = {}
+        self.labels: dict[str, "Label"] = {}
+        self.buttons: list["Button"] = []
+        self.resizable(False, False)
+        self.state: bool = False
+
+        # 设置窗口样式
+        self.title("聊天助手")
+        self.configure(bg="#ecf0f1")
+        self.option_add("*Font", "微软雅黑 9")  # type: ignore # 减小全局字体大小
+
+        global window
+        window = self
+
+        self.geometry("500x280")  # 减小窗口尺寸
+        self.update_idletasks()  # 确保窗口尺寸计算准确
+
+        setup_buttons()
+        setup_labels()
+
+        self.mainloop()
 
 
 def setup_labels():
@@ -136,7 +158,7 @@ def setup_buttons():
     b_start = Button(
         frame_buttons,
         text="▶ 开始/暂停",
-        command=on_toggle_running,
+        command=on_toggle_running_state,
         bg="#2ecc71",
         activebackground="#27ae60",
         **button_config,
@@ -176,6 +198,7 @@ def setup_buttons():
     logger.info("Buttons initialized successfully.")
 
 
+# TODO: 换用Pathlib
 def load_message():
     file_: str = askopenfilename(
         initialdir=get_project_dir() + "\\messages",
@@ -188,8 +211,8 @@ def load_message():
         logger.warning("本次选取被取消！")
 
 
-@subscribe(TOPIC_TOGGLE_RUNNING)
-def on_toggle_running():
+@subscribe(TOPIC_TOGGLE_RUNNING_STATE)
+def on_toggle_running_state():
     temp = window.state
     window.state = not window.state
     update_state(window.state)
@@ -208,6 +231,7 @@ def set_coordinates():
     pub.sendMessage(TOPIC_SET_POSITIONS)
 
 
+# TODO: 换用Pathlib
 def new_message():
     new_file: str = asksaveasfilename(
         initialdir=get_project_dir() + "\\messages",
@@ -218,3 +242,52 @@ def new_message():
         logger.info(f"新的对话文件已创建，文件为: {new_file}")
     else:
         logger.warning("本次选取被取消！")
+
+
+# -----更新显示内容或状态-----
+@subscribe(TOPIC_UPDATE_RUNNING_STATE)
+def update_state(state: bool):
+    window.state = state
+    if state:
+        window.string_vars["state"].set("运行状态: 运行中...")
+        window.labels["status_indicator"].config(fg="#2ecc71")
+    else:
+        window.string_vars["state"].set("运行状态: 停止")
+        window.labels["status_indicator"].config(fg="#e74c3c")
+
+
+@subscribe(TOPIC_SET_CHAT_BOX_POS)
+def update_chat_box_pos(pos: tuple[int, int]):
+    window.string_vars["chat_box_pos"].set(f"输入框位置: {pos}")
+
+
+@subscribe(TOPIC_SET_MESSAGE_AREA)
+def update_message_pos(pos: tuple[int, int]):
+    window.string_vars["message_pos"].set(value=f"消息区域: {pos}")
+    toggle_ui_lock_state(False)
+
+
+@subscribe(TOPIC_UPDATE_HINT)
+def update_hint(text: str):
+    window.string_vars["hint"].set(f"提示: {text}")
+
+
+# -----更新按钮状态(锁定或正常)-----
+def toggle_ui_lock_state(locked: bool, *target: Button) -> None:
+    """更新按钮状态(锁定或正常)
+
+    Args:
+        locked (bool): 是否锁定按钮, True为锁定, False为正常
+        target (Button | list[Button] | None, optional): _description_. Defaults to None.
+    """
+    window.ui_locked = locked
+
+    for ctrl in window.buttons:
+        ctrl.config(
+            state="normal" if ctrl in target else ("disabled" if locked else "normal")
+        )
+
+
+if __name__ == "__main__":
+    ui = Window()
+    logger.info("启动聊天助手")
