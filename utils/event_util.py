@@ -12,9 +12,9 @@ TOPIC_START = "start"
 TOPIC_NEW_MESSAGE = "new_message"
 TOPIC_LOAD_MESSAGE = "load_message"
 
-TOPIC_SET_POSITIONS = "set_coordinates"
+TOPIC_SET_COORDINATES = "set_coordinates"
 TOPIC_SET_CHAT_BOX_POS = "set_chat_box_pos"
-TOPIC_SET_MESSAGE_AREA = "set_message_pos"
+TOPIC_SET_MESSAGE_POS = "set_message_pos"
 
 
 def subscribe(topic: str):

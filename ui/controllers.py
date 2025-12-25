@@ -9,7 +9,7 @@ from utils.event_util import (
     TOPIC_LOAD_MESSAGE,
     TOPIC_NEW_MESSAGE,
     TOPIC_PAUSE,
-    TOPIC_SET_POSITIONS,
+    TOPIC_SET_COORDINATES,
     TOPIC_START,
     TOPIC_TOGGLE_RUNNING,
     subscribe,
@@ -46,9 +46,9 @@ def setup_labels():
     frame_labels.pack(side="top", fill="x", padx=10, pady=8)
 
     # 创建 StringVar 状态变量
-    state = StringVar(value="运行状态: 停止")
+    state = StringVar(value="运行状态: 暂停")
     chat_box_pos = StringVar(value="输入框位置: 未设置")
-    message_pos = StringVar(value="消息区域: 未设置")
+    message_pos = StringVar(value="消息位置: 未设置")
     hint = StringVar(value="提示: 点击'选取坐标'设置位置")
 
     # 注册变量
@@ -205,7 +205,7 @@ def on_toggle_running():
 
 def set_coordinates():
     toggle_ui_lock_state(True)
-    pub.sendMessage(TOPIC_SET_POSITIONS)
+    pub.sendMessage(TOPIC_SET_COORDINATES)
 
 
 def new_message():

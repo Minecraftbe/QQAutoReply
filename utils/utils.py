@@ -13,11 +13,11 @@ def key_listener(hotkey: str | None = None):
 
     if isinstance(hotkey, str) and len(hotkey) == 1:
         add_hotkey(hotkey, lambda: pub.sendMessage(TOPIC_TOGGLE_RUNNING))
-        logger.info(f"发现自定义按键，开始监听 \"{hotkey}\" 键")
+        logger.info(f"发现自定义按键，开始监听 {hotkey} 键")
         return
 
     add_hotkey("p", lambda: pub.sendMessage(TOPIC_TOGGLE_RUNNING))
-    logger.info("未发现自定义按键，默认监听 \"P\" 键")
+    logger.info("未发现自定义按键，默认监听 P 键")
 
 
 if __name__ == '__main__':

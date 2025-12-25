@@ -3,9 +3,9 @@ from time import time, sleep as sl
 
 from pubsub import pub
 from utils.event_util import TOPIC_PAUSE, TOPIC_START, TOPIC_TOGGLE_RUNNING
-from cores.ocr import OpticalCharacterRecognition
-from cores.core import Core
-from cores.opencv import ImageProcessor, ScreenCapturer
+from core.ocr import OpticalCharacterRecognition
+from core.core import Core
+from core.opencv import ImageProcessor, ScreenCapturer
 from utils.interfaces import IWithLogger
 from utils.thread_util import ControllableThread
 

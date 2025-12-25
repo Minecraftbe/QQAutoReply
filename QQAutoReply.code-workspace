@@ -1,0 +1,18 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"cSpell.words": [
+			"borderwidth",
+			"mypkg",
+			"padx",
+			"pady",
+			"qqautoreply",
+			"venv"
+		],
+		"cSpell.allowCompoundWords": true
+	}
+}
