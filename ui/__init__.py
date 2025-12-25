@@ -1,1 +1,1 @@
-from . import window  # type: ignore  # noqa: F401
+from . import window
