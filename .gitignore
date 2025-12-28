@@ -1,12 +1,13 @@
-/messages/*
-/backup/
+/messages
+/backup
 /temp/*
 .env
 latest.log
 /experimental/*
 /1.txt
 /*.code-workspace
-.idea/*
+.idea
+.vscode
 
 # Python-generated files
 __pycache__/
