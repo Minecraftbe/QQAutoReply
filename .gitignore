@@ -1,12 +1,14 @@
-/messages/*
-/backup/
-/temp/*
-.env
-latest.log
-/experimental/*
+/messages
+/backup
+/temp
+/experimental
+/.paddlex
 /1.txt
 /*.code-workspace
-.idea/*
+.idea
+.vscode
+.env
+latest.log
 
 # Python-generated files
 __pycache__/
@@ -14,7 +16,7 @@ __pycache__/
 build/
 dist/
 wheels/
-typings/*
+typings
 *.egg-info
 
 # Virtual environments
