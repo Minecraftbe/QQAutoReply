@@ -18,7 +18,7 @@ from pubsub import pub
 import math
 import cv2
 import numpy as np
-from tool import process_image, text_recognition
+from tool import process_image
 
 
 class Tickable(Protocol):
@@ -35,6 +35,9 @@ class ControllableThread(Thread, ABC):
         self, name: str | None = None, target: Callable[..., Any] | None = None
     ):
         super().__init__(name=name, target=target, daemon=True)
+        self.logger = get_logger(
+            f"{self.__class__.__module__}.{self.__class__.__name__}"
+        )
         self._running_event = Event()
         self._stop_event = Event()
 
@@ -46,7 +49,20 @@ class ControllableThread(Thread, ABC):
     def run(self):
         while not self._stop_event.is_set():
             self._running_event.wait()
-            self.tick()
+            try:
+                self.tick()
+            except Exception as e:
+                import traceback
+
+                self.logger.exception(e)
+                message = "".join(traceback.format_exception(e))
+                pub.sendMessage(
+                    TOPIC_UI_SIMPLE_MSGBOX,
+                    icon="error",
+                    title="发生了一个错误",
+                    message=message,
+                )
+                pub.sendMessage(TOPIC_TOGGLE_RUNNING_STATE)
 
     def pause(self):
         self._running_event.clear()
@@ -85,7 +101,7 @@ class CoreThread(ControllableThread):
         if remaining > 0:
             sleep(remaining)
             # test
-            # print(remaining)
+            print(remaining)
         else:
             if not self.warned:
                 self.logger.warning(
@@ -155,7 +171,7 @@ class ImageProcessor(NeedInitialize):
     # TODO: 完善聊天截图变化检测逻辑
     def tick(self):
         self.is_changed = False
-        if img := self.get_newer_screenshot():
+        if (img := self.get_newer_screenshot()) is not None:
             roi, img = process_image(img)
             ...
 
@@ -173,7 +189,7 @@ class ImageProcessor(NeedInitialize):
         self.last_image = self.this_image
         with mss() as sct:
             self.this_image = cv2.cvtColor(
-                np.array(sct.grab(self.monitor)), cv2.COLOR_BGR2GRAY
+                np.array(sct.grab(self.monitor)), cv2.COLOR_BGRA2BGR
             )
 
         if self.is_screenshot_changed():
