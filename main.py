@@ -21,8 +21,9 @@ def main() -> None:
     key_listening_thread.start()
 
     core = Core(ImageProcessor())
-    core_thread = CoreThread(core)
+    core_thread = CoreThread(core, 2)
     core_thread.start()
+    del core  # 同时删除主线程对image processor的引用, 由于我目前没搜到的原因, 保留这个引用mss会报错
 
     ui = Window()
 

@@ -273,12 +273,13 @@ def update_hint(text: str):
 available_msgbox_mapping = {
     messagebox.INFO: messagebox.showinfo,
     messagebox.WARNING: messagebox.showwarning,
+    messagebox.ERROR: messagebox.showerror
 }
 
 
 @subscribe(TOPIC_UI_SIMPLE_MSGBOX)
 def show_simple_messagebox(
-    icon: Literal["info", "warning"],
+    icon: Literal["info", "warning", "error"],
     title: str | None = None,
     message: str | None = None,
 ):
