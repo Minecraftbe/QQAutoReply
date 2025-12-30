@@ -1,10 +1,11 @@
 from __future__ import annotations
-from tkinter import Frame, LabelFrame, Tk, Button, StringVar, Label
+from tkinter import Frame, LabelFrame, Tk, Button, StringVar, Label, messagebox
 from tkinter.filedialog import askopenfilename, asksaveasfilename
-from typing import TYPE_CHECKING, Any
+from typing import Any, Literal
 from pubsub import pub
 
 from utils import (
+    CWD,
     TOPIC_LOAD_MESSAGE,
     TOPIC_NEW_MESSAGE,
     TOPIC_PAUSE,
@@ -13,18 +14,17 @@ from utils import (
     TOPIC_SET_POSITIONS,
     TOPIC_START,
     TOPIC_TOGGLE_RUNNING_STATE,
-    TOPIC_UPDATE_HINT,
+    TOPIC_UI_SIMPLE_MSGBOX,
+    TOPIC_UI_UPDATE_HINT,
     TOPIC_UPDATE_RUNNING_STATE,
     subscribe,
     get_logger,
-    get_project_dir,
 )
 
 logger = get_logger(__name__)
 window: Window
 
 
-# TODO: 合并controller.py和update.py的内容到Window类中, 减少过度抽象
 class Window(Tk):
     def __init__(self):
         super().__init__()
@@ -198,10 +198,9 @@ def setup_buttons():
     logger.info("Buttons initialized successfully.")
 
 
-# TODO: 换用Pathlib
 def load_message():
     file_: str = askopenfilename(
-        initialdir=get_project_dir() + "\\messages",
+        initialdir=CWD / "messages",
         filetypes=(("对话文件", "*.json"), ("所有文件", "*.*")),
     )
     if file_ != "":
@@ -231,10 +230,9 @@ def set_coordinates():
     pub.sendMessage(TOPIC_SET_POSITIONS)
 
 
-# TODO: 换用Pathlib
 def new_message():
     new_file: str = asksaveasfilename(
-        initialdir=get_project_dir() + "\\messages",
+        initialdir=CWD / "messages",
         filetypes=(("对话文件", "*.json"), ("所有文件", "*.*")),
     )
     if new_file != "":
@@ -267,9 +265,24 @@ def update_message_pos(pos: tuple[int, int]):
     toggle_ui_lock_state(False)
 
 
-@subscribe(TOPIC_UPDATE_HINT)
+@subscribe(TOPIC_UI_UPDATE_HINT)
 def update_hint(text: str):
     window.string_vars["hint"].set(f"提示: {text}")
+
+
+available_msgbox_mapping = {
+    messagebox.INFO: messagebox.showinfo,
+    messagebox.WARNING: messagebox.showwarning,
+}
+
+
+@subscribe(TOPIC_UI_SIMPLE_MSGBOX)
+def show_simple_messagebox(
+    icon: Literal["info", "warning"],
+    title: str | None = None,
+    message: str | None = None,
+):
+    available_msgbox_mapping[icon](title, message)
 
 
 # -----更新按钮状态(锁定或正常)-----

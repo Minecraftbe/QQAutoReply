@@ -1,18 +1,18 @@
 from collections.abc import Callable
-from os.path import dirname, abspath
-from sys import stdout
+from pathlib import Path
 from time import sleep
-from typing import Any
+from typing import ParamSpec, TypeVar
 from pubsub import pub
 from keyboard import add_hotkey
 from threading import Thread, current_thread
 from pyautogui import position
-
 import logging
 
-TOPIC_UPDATE_RUNNING_STATE = "update_state"
-TOPIC_UPDATE_HINT = "ui.hint"
 
+TOPIC_UI_UPDATE_HINT = "ui.update_hint"
+TOPIC_UI_SIMPLE_MSGBOX = "ui.show_simple_msgbox"
+
+TOPIC_UPDATE_RUNNING_STATE = "update_state"
 TOPIC_TOGGLE_RUNNING_STATE = "toggle_running"
 TOPIC_PAUSE = "pause"
 TOPIC_START = "start"
@@ -23,56 +23,50 @@ TOPIC_SET_POSITIONS = "set_coordinates"
 TOPIC_SET_CHAT_BOX_POS = "set_chat_box_pos"
 TOPIC_SET_MESSAGE_AREA = "set_message_pos"
 
+CWD = Path.cwd()
 
-def subscribe(topic: str):
-    """该装饰器只能用于函数而非方法."""
+is_logger_initiated = False
 
-    def decorator(func: Callable[..., Any]) -> Callable[..., Any]:
+
+P = ParamSpec("P")
+R = TypeVar("R")
+
+def subscribe(topic: str) -> Callable[[Callable[P, R]], Callable[P, R]]:
+    """尽量不要用这个装饰器来订阅方法, 在方法上面的副作用暂时不明确"""
+    def decorator(func: Callable[P, R]) -> Callable[P, R]:
         pub.subscribe(func, topic)
         return func
-
     return decorator
 
-
-# TODO: 换用Pathlib， 并改进逻辑直到找到pyproject.toml
-def get_project_dir():
-    current_path = dirname(abspath(__file__))
-    # 获取当前脚本所在的项目根目录
-    root_path = dirname(current_path)
-    # print("项目根目录路径：", root_path)
-    return root_path
-
-
-# TODO:换pathlib
 def setup_logger():
-    log_dir: str = get_project_dir() + "\\latest.log"
-
-    logger = logging.getLogger()
-    if logger.handlers:
-        return  # 已设置过，不重复添加
-
-    logger.setLevel(logging.DEBUG)
+    from sys import stdout
+    log_dir = CWD / "latest.log"
+    logging.basicConfig()
+    root = logging.getLogger()
+    root.setLevel(logging.DEBUG)
 
     formatter = logging.Formatter(
         "[%(asctime)s] [%(threadName)s/%(levelname)s] [%(name)s]: %(message)s",
         datefmt="%H:%M:%S",
     )
 
-    # 🔹 文件 Handler（写入日志文件）
     file_handler = logging.FileHandler(log_dir, mode="w", encoding="utf-8")
-    file_handler.setFormatter(formatter)
-
-    # 🔹 控制台 Handler（输出到终端）
     console_handler = logging.StreamHandler(stdout)
+    file_handler.setFormatter(formatter)
     console_handler.setFormatter(formatter)
+    file_handler.setLevel(logging.INFO)
+    console_handler.setLevel(logging.DEBUG)
 
-    # 添加 Handler
-    logger.addHandler(file_handler)
-    logger.addHandler(console_handler)
+    root.addHandler(file_handler)
+    root.addHandler(console_handler)
+    global is_logger_initiated
+    is_logger_initiated = True
 
 
 def get_logger(name: str):
-    setup_logger()
+    global is_logger_initiated
+    if not is_logger_initiated:
+        setup_logger()
     return logging.getLogger(name)
 
 
@@ -103,7 +97,7 @@ def chat_box_pos_picker() -> pos:
     hint: str = (
         f"🖱 现在选取输入框位置，请将鼠标移动到目标位置，{delay} 秒后将获取坐标..."
     )
-    pub.sendMessage(TOPIC_UPDATE_HINT, text=hint)
+    pub.sendMessage(TOPIC_UI_UPDATE_HINT, text=hint)
     sleep(delay)
     x, y = position()
     logger.info(f"📍 当前坐标：({x}, {y})")
@@ -114,13 +108,13 @@ def chat_box_pos_picker() -> pos:
 def messages_area_picker() -> area:
     delay: int = 3
     pub.sendMessage(
-        TOPIC_UPDATE_HINT,
+        TOPIC_UI_UPDATE_HINT,
         text=f"❗ 现在选取聊天界面位置，请移动鼠标到聊天界面框左上角，{delay} 秒后获取坐标",
     )
     sleep(delay)
     x1, y1 = position()
 
-    pub.sendMessage(TOPIC_UPDATE_HINT, text=f"🖱 移动鼠标到右下角，{delay} 秒后获取坐标")
+    pub.sendMessage(TOPIC_UI_UPDATE_HINT, text=f"🖱 移动鼠标到右下角，{delay} 秒后获取坐标")
     sleep(delay)
     x2, y2 = position()
 
@@ -136,7 +130,7 @@ def messages_area_picker() -> area:
         y1, y2 = sorted((y1, y2))
         logger.info(f"✅ 已调整截图区域: ({x1}, {y1}, {x2}, {y2})")
 
-    pub.sendMessage(TOPIC_UPDATE_HINT, text="坐标选取已完成！")
+    pub.sendMessage(TOPIC_UI_UPDATE_HINT, text="坐标选取已完成！")
     pub.sendMessage(TOPIC_SET_MESSAGE_AREA, pos=(x1, y1, x2, y2))
     return x1, y1, x2, y2
 
